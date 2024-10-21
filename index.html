@@ -123,7 +123,14 @@
 </div>
 
 <script>
+    // Load saved conversion type from localStorage on page load
     window.onload = function () {
+        const savedType = localStorage.getItem('conversionType');
+        if (savedType) {
+            document.getElementById("conversionType").value = savedType;
+            showFields();  // Show the appropriate fields based on saved value
+        }
+
         // Add event listeners for "Enter" key presses
         document.getElementById("fontSize").addEventListener("keydown", function (e) {
             if (e.key === "Enter") calculateLetterSpacing();
@@ -144,6 +151,9 @@
 
     function showFields() {
         const conversionType = document.getElementById("conversionType").value;
+
+        // Save the selected conversion type in localStorage
+        localStorage.setItem('conversionType', conversionType);
 
         // Hide all fields initially
         document.getElementById("letterSpacingFields").style.display = "none";
@@ -199,7 +209,5 @@
         }
     }
 </script>
-
-
 </body>
 </html>
