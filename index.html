@@ -3,211 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Letter Spacing & Unit Converter</title>
-    <style>
-        * {
-            box-sizing: border-box; /* Ensures padding and borders are included in width */
-        }
-
-        body {
-            font-family: 'Poppins', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 30px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            overflow: hidden;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus, select:focus {
-            border-color: #007bff;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        button{
-            margin-top: 36px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .result {
-            margin-top: 20px;
-            font-weight: bold;
-            text-align: center;
-            color: #007bff;
-            font-size: 18px;
-        }
-
-        .conversion {
-            margin-top: 30px;
-            text-align: center;
-        }
-    </style>
+    <title>Letter Spacing Calculator</title>
+    <link rel="stylesheet" href="./styles.css"> <!-- Link to the CSS file -->
 </head>
 <body>
 
-<div class="container">
-    <h1>Letter Spacing & Unit Converter</h1>
-
-    <label for="conversionType">Select Conversion Type:</label>
-    <select id="conversionType" onchange="showFields()">
-        <option value="letterSpacing">Letter Spacing</option>
-        <option value="remToPx">Rem to Px</option>
-        <option value="emToPx">Em to Px</option>
-    </select>
-
-    <div id="letterSpacingFields" class="conversion">
-        <label for="fontSize">Font Size (px):</label>
-        <input type="number" id="fontSize" placeholder="Enter font size" required>
-
-        <label for="letterSpacing">Letter Spacing (%):</label>
-        <input type="number" id="letterSpacing" placeholder="Enter letter spacing (e.g., -2 for -2%)" required>
-
-        <button onclick="calculateLetterSpacing()">Calculate Letter Spacing in Pixels</button>
-
-        <div class="result" id="result"></div>
+    <div class="container">
+        <h1>Letter Spacing Calculator</h1>
+    
+        <div class="select-container">
+            <label for="conversionType">Select Conversion Type:</label>
+            <select id="conversionType" onchange="showFields()">
+                <option value="">Choose...</option>
+                <option value="letterSpacing">Letter Spacing</option>
+                <option value="remToPx">Convert rem to px</option>
+                <option value="emToPx">Convert em to px</option>
+            </select>
+        </div>
+    
+        <div id="letterSpacingFields" style="display: none;">
+            <label for="fontSize">Font Size (px):</label>
+            <input type="number" id="fontSize" placeholder="Enter font size" required>
+            
+            <label for="letterSpacing">Letter Spacing (%):</label>
+            <input type="number" id="letterSpacing" placeholder="Enter letter spacing (e.g., -2 for -2%)" required>
+            
+            <button onclick="calculateLetterSpacing()" class="calc-button">Calculate Letter Spacing</button>
+            <div class="result" id="result"></div>
+        </div>
+    
+        <div id="remFields" style="display: none;">
+            <label for="remValue">Convert rem to px:</label>
+            <input type="number" id="remValue" placeholder="Enter rem value" required>
+            <button onclick="convertRemToPx()" class="calc-button">Convert</button>
+            <div class="result" id="remResult"></div>
+        </div>
+    
+        <div id="emFields" style="display: none;">
+            <label for="emValue">Convert em to px:</label>
+            <input type="number" id="emValue" placeholder="Enter em value" required>
+            <button onclick="convertEmToPx()" class="calc-button">Convert</button>
+            <div class="result" id="emResult"></div>
+        </div>
     </div>
 
-    <div id="remFields" class="conversion" style="display:none;">
-        <label for="remValue">Convert rem to px:</label>
-        <input type="number" id="remValue" placeholder="Enter rem value" required>
-        <button onclick="convertRemToPx()">Convert</button>
-        <div class="result" id="remResult"></div>
-    </div>
-
-    <div id="emFields" class="conversion" style="display:none;">
-        <label for="emValue">Convert em to px:</label>
-        <input type="number" id="emValue" placeholder="Enter em value" required>
-        <button onclick="convertEmToPx()">Convert</button>
-        <div class="result" id="emResult"></div>
-    </div>
-</div>
-
-<script>
-    // Load saved conversion type from localStorage on page load
-    window.onload = function () {
-        const savedType = localStorage.getItem('conversionType');
-        if (savedType) {
-            document.getElementById("conversionType").value = savedType;
-            showFields();  // Show the appropriate fields based on saved value
-        }
-
-        // Add event listeners for "Enter" key presses
-        document.getElementById("fontSize").addEventListener("keydown", function (e) {
-            if (e.key === "Enter") calculateLetterSpacing();
-        });
-
-        document.getElementById("letterSpacing").addEventListener("keydown", function (e) {
-            if (e.key === "Enter") calculateLetterSpacing();
-        });
-
-        document.getElementById("remValue").addEventListener("keydown", function (e) {
-            if (e.key === "Enter") convertRemToPx();
-        });
-
-        document.getElementById("emValue").addEventListener("keydown", function (e) {
-            if (e.key === "Enter") convertEmToPx();
-        });
-    };
-
-    function showFields() {
-        const conversionType = document.getElementById("conversionType").value;
-
-        // Save the selected conversion type in localStorage
-        localStorage.setItem('conversionType', conversionType);
-
-        // Hide all fields initially
-        document.getElementById("letterSpacingFields").style.display = "none";
-        document.getElementById("remFields").style.display = "none";
-        document.getElementById("emFields").style.display = "none";
-
-        // Show relevant fields based on selection
-        if (conversionType === "letterSpacing") {
-            document.getElementById("letterSpacingFields").style.display = "block";
-        } else if (conversionType === "remToPx") {
-            document.getElementById("remFields").style.display = "block";
-        } else if (conversionType === "emToPx") {
-            document.getElementById("emFields").style.display = "block";
-        }
-    }
-
-    function calculateLetterSpacing() {
-        const fontSize = parseFloat(document.getElementById("fontSize").value);
-        const letterSpacingPercent = parseFloat(document.getElementById("letterSpacing").value);
-
-        if (!isNaN(fontSize) && !isNaN(letterSpacingPercent)) {
-            const letterSpacingInPixels = fontSize * (letterSpacingPercent / 100);
-            document.getElementById("result").innerText = 
-                `Letter Spacing: ${letterSpacingInPixels.toFixed(2)} pixels`;
-        } else {
-            document.getElementById("result").innerText = "Please enter valid values.";
-        }
-    }
-
-    function convertRemToPx() {
-        const remValue = parseFloat(document.getElementById("remValue").value);
-        const baseFontSize = 16; // Assuming the base font size is 16px
-
-        if (!isNaN(remValue)) {
-            const pxValue = remValue * baseFontSize;
-            document.getElementById("remResult").innerText = 
-                `${remValue} rem = ${pxValue.toFixed(2)} px`;
-        } else {
-            document.getElementById("remResult").innerText = "Please enter a valid rem value.";
-        }
-    }
-
-    function convertEmToPx() {
-        const emValue = parseFloat(document.getElementById("emValue").value);
-        const baseFontSize = 16; // Assuming the base font size is 16px
-
-        if (!isNaN(emValue)) {
-            const pxValue = emValue * baseFontSize;
-            document.getElementById("emResult").innerText = 
-                `${emValue} em = ${pxValue.toFixed(2)} px`;
-        } else {
-            document.getElementById("emResult").innerText = "Please enter a valid em value.";
-        }
-    }
-</script>
+<script src="./script.js"></script> <!-- Link to the JavaScript file -->
 </body>
 </html>
