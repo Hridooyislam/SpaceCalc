@@ -123,12 +123,34 @@
 </div>
 
 <script>
+    window.onload = function () {
+        // Add event listeners for "Enter" key presses
+        document.getElementById("fontSize").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") calculateLetterSpacing();
+        });
+
+        document.getElementById("letterSpacing").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") calculateLetterSpacing();
+        });
+
+        document.getElementById("remValue").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") convertRemToPx();
+        });
+
+        document.getElementById("emValue").addEventListener("keydown", function (e) {
+            if (e.key === "Enter") convertEmToPx();
+        });
+    };
+
     function showFields() {
         const conversionType = document.getElementById("conversionType").value;
+
+        // Hide all fields initially
         document.getElementById("letterSpacingFields").style.display = "none";
         document.getElementById("remFields").style.display = "none";
         document.getElementById("emFields").style.display = "none";
 
+        // Show relevant fields based on selection
         if (conversionType === "letterSpacing") {
             document.getElementById("letterSpacingFields").style.display = "block";
         } else if (conversionType === "remToPx") {
@@ -177,6 +199,7 @@
         }
     }
 </script>
+
 
 </body>
 </html>
