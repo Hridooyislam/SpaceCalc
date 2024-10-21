@@ -30,21 +30,21 @@
             <input type="number" id="letterSpacing" placeholder="Enter letter spacing (e.g., -2 for -2%)" required>
             
             <button onclick="calculateLetterSpacing()" class="calc-button">Calculate Letter Spacing</button>
-            <div class="result" id="result"></div>
+            <div class="result" id="result" onclick="copyToClipboard('result')"></div>
         </div>
     
         <div id="remFields" style="display: none;">
             <label for="remValue">Convert rem to px:</label>
             <input type="number" id="remValue" placeholder="Enter rem value" required>
             <button onclick="convertRemToPx()" class="calc-button">Convert</button>
-            <div class="result" id="remResult"></div>
+            <div class="result" id="remResult" onclick="copyToClipboard('remResult')"></div>
         </div>
     
         <div id="emFields" style="display: none;">
             <label for="emValue">Convert em to px:</label>
             <input type="number" id="emValue" placeholder="Enter em value" required>
             <button onclick="convertEmToPx()" class="calc-button">Convert</button>
-            <div class="result" id="emResult"></div>
+            <div class="result" id="emResult" onclick="copyToClipboard('emResult')"></div>
         </div>
     </div>
 

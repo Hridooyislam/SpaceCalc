@@ -6,23 +6,26 @@ window.onload = function () {
         showFields();  // Show the appropriate fields based on saved value
     }
 
-    // Add event listeners for "Enter" key presses
-    document.getElementById("fontSize").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") calculateLetterSpacing();
-    });
-
-    document.getElementById("letterSpacing").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") calculateLetterSpacing();
-    });
-
-    document.getElementById("remValue").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") convertRemToPx();
-    });
-
-    document.getElementById("emValue").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") convertEmToPx();
-    });
+    // Attach 'keydown' event listener to input fields for Enter key detection
+    document.getElementById("fontSize").addEventListener("keydown", handleKeyPress);
+    document.getElementById("letterSpacing").addEventListener("keydown", handleKeyPress);
+    document.getElementById("remValue").addEventListener("keydown", handleKeyPress);
+    document.getElementById("emValue").addEventListener("keydown", handleKeyPress);
 };
+
+function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        event.preventDefault(); // Prevent default form submission
+        const conversionType = document.getElementById("conversionType").value;
+        if (conversionType === "letterSpacing") {
+            calculateLetterSpacing();
+        } else if (conversionType === "remToPx") {
+            convertRemToPx();
+        } else if (conversionType === "emToPx") {
+            convertEmToPx();
+        }
+    }
+}
 
 function showFields() {
     const conversionType = document.getElementById("conversionType").value;
@@ -51,8 +54,9 @@ function calculateLetterSpacing() {
 
     if (!isNaN(fontSize) && !isNaN(letterSpacingPercent)) {
         const letterSpacingInPixels = fontSize * (letterSpacingPercent / 100);
+        const formattedResult = `${letterSpacingInPixels >= 0 ? '+' : ''}${letterSpacingInPixels.toFixed(2)} pixels`;
         document.getElementById("result").innerText = 
-            `Letter Spacing: ${letterSpacingInPixels.toFixed(2)} pixels`;
+            `Letter Spacing: ${formattedResult}`;
     } else {
         document.getElementById("result").innerText = "Please enter valid values.";
     }
@@ -64,8 +68,9 @@ function convertRemToPx() {
 
     if (!isNaN(remValue)) {
         const pxValue = remValue * baseFontSize;
+        const formattedResult = `${pxValue >= 0 ? '+' : ''}${pxValue.toFixed(2)} px`;
         document.getElementById("remResult").innerText = 
-            `${remValue} rem = ${pxValue.toFixed(2)} px`;
+            `${remValue} rem = ${formattedResult}`;
     } else {
         document.getElementById("remResult").innerText = "Please enter a valid rem value.";
     }
@@ -73,13 +78,31 @@ function convertRemToPx() {
 
 function convertEmToPx() {
     const emValue = parseFloat(document.getElementById("emValue").value);
-    const baseFontSize = 16; // Assuming the base font size is 16px
-
+    const baseFontSize = 16; // Assuming the base font size is 16
+    
     if (!isNaN(emValue)) {
         const pxValue = emValue * baseFontSize;
+        const formattedResult = `${pxValue >= 0 ? '+' : ''}${pxValue.toFixed(2)} px`;
         document.getElementById("emResult").innerText = 
-            `${emValue} em = ${pxValue.toFixed(2)} px`;
+            `${emValue} em = ${formattedResult}`;
     } else {
         document.getElementById("emResult").innerText = "Please enter a valid em value.";
+    }
+}
+
+function copyToClipboard(resultId) {
+    const resultText = document.getElementById(resultId).innerText;
+    const numberPart = resultText.match(/[-+]?\d+(\.\d+)?/); // Match the number including + or -
+    
+    if (numberPart) {
+        navigator.clipboard.writeText(numberPart[0])
+            .then(() => {
+                alert(`Copied: ${numberPart[0]}`);
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+    } else {
+        alert('No number to copy!');
     }
 }
